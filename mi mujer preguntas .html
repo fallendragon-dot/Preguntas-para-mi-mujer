@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cuestionario Pareja - Opciones Múltiples y Respuestas Libres</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #440000, #880000, #220000);
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  h1 {
+    color: #ff3366;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .container {
+    max-width: 850px;
+    margin: auto;
+    background: #330000cc;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 0 20px #ff3366;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .options {
+    margin-top: 5px;
+    margin-left: 15px;
+  }
+  .options label {
+    font-weight: normal;
+    font-size: 1rem;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type="text"] {
+    margin-top: 8px;
+    padding: 8px;
+    width: 90%;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+  }
+  button {
+    margin-top: 30px;
+    background: #ff3366;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  button:hover {
+    background: #e60044;
+  }
+  #result {
+    margin-top: 25px;
+    background: #660000cc;
+    padding: 15px;
+    border-radius: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  #category-select {
+    display: block;
+    margin: 0 auto 30px auto;
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    border: none;
+    max-width: 280px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Cuestionario para Pareja 🔥</h1>
+
+<select id="category-select" onchange="loadQuestions()">
+  <option value="" disabled selected>Selecciona categoría</option>
+  <option value="romanticas">Románticas (5)</option>
+  <option value="divertidas">Divertidas (5)</option>
+  <option value="atrevidas">Atrevidas (5)</option>
+  <option value="verdadoreto">Verdad o Reto (5)</option>
+  <option value="todas">Todas (20)</option>
+</select>
+
+<div class="container" id="quiz-container">
+  <!-- Preguntas cargan aquí -->
+</div>
+
+<button id="submit-btn" onclick="showResults()" style="display:none;">Enviar respuestas</button>
+
+<div id="result"></div>
+
+<script>
+const questions = {
+  romanticas: [
+    {
+      question: "¿Qué es lo que más extrañas de mí cuando no estamos cerca?",
+      type: "single",
+      options: [
+        "Tu abrazo y tu olor",
+        "Nuestros mensajes hasta tarde",
+        "Tu sonrisa y mirada",
+        "Las cosas que hacemos juntos"
+      ]
+    },
+    {
+      question: "¿Qué fantasía romántica aún no hemos cumplido y te mueres por hacer? (Puedes elegir varias)",
+      type: "multiple",
+      options: [
+        "Una cena a la luz de las velas en la playa",
+        "Despertar juntos en una casa en la montaña",
+        "Viajar sin destino contigo",
+        "Bailar bajo la lluvia sin importar nada"
+      ]
+    },
+    {
+      question: "Si estuvieras frente a mí ahora mismo, ¿cómo me mirarías y qué me dirías en voz bajita?",
+      type: "text"
+    },
+    {
+      question: "¿Qué momento conmigo repetirías una y otra vez sin cansarte?",
+      type: "single",
+      options: [
+        "Nuestro primer beso",
+        "La primera vez que me dijiste 'te amo'",
+        "Los días que pasamos sin preocuparnos por nada",
+        "Cuando nos abrazamos sin decir nada y todo estaba claro"
+      ]
+    },
+    {
+      question: "¿Cómo sería tu noche perfecta conmigo, desde que llego hasta que amanece? (Puedes escribir tu propia respuesta)",
+      type: "text"
+    }
+  ],
+  divertidas: [
+    {
+      question: "Si tuvieras que conquistarme otra vez desde cero, ¿qué harías primero?",
+      type: "single",
+      options: [
+        "Mandarte mensajes con emojis locos",
+        "Invitarte a una cita inesperada",
+        "Hacerte un video divertido para conquistar tu risa",
+        "Decirte un piropo ridículo para romper el hielo"
+      ]
+    },
+    {
+      question: "¿Qué locura te atreverías a hacer conmigo solo por diversión? (Puedes elegir varias)",
+      type: "multiple",
+      options: [
+        "Bailar en público sin importar quién nos vea",
+        "Competir para ver quién hace la mejor imitación",
+        "Cantar a todo pulmón una canción cursi",
+        "Hacer una pijamada temática y reírnos sin parar"
+      ]
+    },
+    {
+      question: "Si tuvieras que hacerme reír en 5 segundos, ¿qué dirías o harías?",
+      type: "text"
+    },
+    {
+      question: "¿Qué invento sexy crearías para parejas?",
+      type: "single",
+      options: [
+        "Una alarma que solo suene con besos",
+        "Ropa que cambie de color según el estado de ánimo",
+        "Una aplicación que envíe mensajes secretos calientes",
+        "Un robot que haga masajes automáticos"
+      ]
+    },
+    {
+      question: "¿Cuál sería nuestro apodo secreto si fuéramos personajes de una peli hot?",
+      type: "single",
+      options: [
+        "El Tigre y La Pantera",
+        "El Fuego y La Llama",
+        "El Lobo y La Zorra",
+        "Los Enamorados Peligrosos"
+      ]
+    }
+  ],
+  atrevidas: [
+    {
+      question: "Si llegara a tu casa, te empujo suavemente contra la pared y te susurro al oído “no digas nada, solo déjate llevar…” ¿qué me harías después sin decir una palabra?",
+      type: "single",
+      options: [
+        "Te abrazaría con ganas y te besaría intensamente",
+        "Te tomaría de la cintura y te susurraría al oído",
+        "Te mordería el cuello lentamente",
+        "Te dejaría sin aliento con mis caricias"
+      ]
+    },
+    {
+      question: "Si tuvieras el poder de detener el tiempo por una noche y hacerme absolutamente todo lo que te imaginas… ¿qué pasaría en esas horas secretas? Descríbelo sin censura. (Escribe tu respuesta)",
+      type: "text"
+    },
+    {
+      question: "Si esta noche te doy el poder de hacerme lo que quieras, sin que nadie nos interrumpa, sin reglas, sin ropa… solo tú dominando todo lo que pase… ¿qué harías primero, cómo me tocarías, y qué fantasía harías realidad sin dejarme escapar?",
+      type: "text"
+    },
+    {
+      question: "¿Te excita la idea de que alguien pudiera escucharnos mientras estamos juntos?",
+      type: "single",
+      options: [
+        "Sí, me pone la adrenalina a mil",
+        "Un poco, me gusta el riesgo",
+        "No, prefiero privacidad total",
+        "Me encantaría, es una fantasía secreta"
+      ]
+    },
+    {
+      question: "¿Con qué parte de tu cuerpo me provocarías primero sin decir una sola palabra? (Puedes elegir varias)",
+      type: "multiple",
+      options: [
+        "Con mis labios, besándote lentamente",
+        "Con mis manos, recorriéndote despacio",
+        "Con mi mirada intensa y fija",
+        "Con mi respiración cerca de tu piel"
+      ]
+    }
+  ],
+  verdadoreto: [
+    {
+      question: "¿Te has tocado pensando en mí?",
+      type: "single",
+      options: [
+        "Sí, más veces de las que puedo contar",
+        "A veces, cuando me acuerdo",
+        "No, nunca he pensado tanto",
+        "Prefiero no responder"
+      ]
+    },
+    {
+      question: "¿Te has grabado solo/a pensando en lo que te haría si estuviéramos juntos?",
+      type: "single",
+      options: [
+        "Sí, y me gustaría compartirlo contigo",
+        "Solo en mi mente, nada grabado",
+        "Nunca lo he hecho, pero me gustaría",
+        "Prefiero no decir"
+      ]
+    },
+    {
+      question: "¿En qué lugar prohibido te encantaría hacerlo conmigo? (Puedes escribir tu lugar favorito)",
+      type: "text"
+    },
+    {
+      question: "¿Qué parte de tu cuerpo te gustaría que yo explorara lentamente sin prisa?",
+      type: "single",
+      options: [
+        "Mi cuello y hombros",
+        "Mi espalda baja",
+        "Mis muslos",
+        "Donde tú quieras experimentar"
+      ]
+    },
+    {
+      question: "¿Qué fantasía tienes que involucra verme, tocarme o escucharme sin que yo lo sepa?",
+      type: "text"
+    }
+  ]
+};
+
+const quizContainer = document.getElementById('quiz-container');
+const submitBtn = document.getElementById('submit-btn');
+const resultDiv = document.getElementById('result');
+const categorySelect = document.getElementById('category-select');
+
+function loadQuestions() {
+  const category = categorySelect.value;
+  let allQuestions = [];
+
+  if (category === 'todas') {
+    allQuestions = [...questions.romanticas, ...questions.divertidas, ...questions.atrevidas, ...questions.verdadoreto];
+  } else if (category && questions[category]) {
+    allQuestions = questions[category];
+  } else {
+    quizContainer.innerHTML = '';
+    submitBtn.style.display = 'none';
+    resultDiv.innerHTML = '';
+    return;
+  }
+
+  quizContainer.innerHTML = '';
+  resultDiv.innerHTML = '';
+  submitBtn.style.display = 'block';
+
+  allQuestions.forEach((q, index) => {
+    const questionBlock = document.createElement('div');
+    questionBlock.className = 'question-block';
+
+    const questionLabel = document.createElement('label');
+    questionLabel.textContent = (index + 1) + '. ' + q.question;
+    questionLabel.htmlFor = `q${index}`;
+    questionBlock.appendChild(questionLabel);
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'options';
+
+    if (q.type === 'single') {
+      q.options.forEach((opt, i) => {
+        const optionId = `q${index}_opt${i}`;
+
+        const optionLabel = document.createElement('label');
+        optionLabel.htmlFor = optionId;
+
+        const radioInput = document.createElement('input');
+        radioInput.type = 'radio';
+        radioInput.name = `q${index}`;
+        radioInput.id = optionId;
+        radioInput.value = opt;
+        radioInput.required = true;
+
+        optionLabel.appendChild(radioInput);
+        optionLabel.appendChild(document.createTextNode(' ' + opt));
+
+        optionsDiv.appendChild(optionLabel);
+      });
+    } else if (q.type === 'multiple') {
+      q.options.forEach((opt, i) => {
+        const optionId = `q${index}_opt${i}`;
+
+        const optionLabel = document.createElement('label');
+        optionLabel.htmlFor = optionId;
+
+        const checkboxInput = document.createElement('input');
+        checkboxInput.type = 'checkbox';
+        checkboxInput.name = `q${index}`;
+        checkboxInput.id = optionId;
+        checkboxInput.value = opt;
+
+        optionLabel.appendChild(checkboxInput);
+        optionLabel.appendChild(document.createTextNode(' ' + opt));
+
+        optionsDiv.appendChild(optionLabel);
+      });
+    } else if (q.type === 'text') {
+      const textInput = document.createElement('input');
+      textInput.type = 'text';
+      textInput.name = `q${index}_text`;
+      textInput.placeholder = 'Escribe tu respuesta aquí...';
+      textInput.required = true;
+      optionsDiv.appendChild(textInput);
+    }
+
+    questionBlock.appendChild(optionsDiv);
+    quizContainer.appendChild(questionBlock);
+  });
+}
+
+function showResults() {
+  const category = categorySelect.value;
+  let allQuestions = [];
+
+  if (category === 'todas') {
+    allQuestions = [...questions.romanticas, ...questions.divertidas, ...questions.atrevidas, ...questions.verdadoreto];
+  } else if (category && questions[category]) {
+    allQuestions = questions[category];
+  } else {
+    return;
+  }
+
+  // Validar respuestas
+  for(let i=0; i<allQuestions.length; i++) {
+    const q = allQuestions[i];
+    if(q.type === 'single') {
+      const radios = document.getElementsByName(`q${i}`);
+      if (![...radios].some(r => r.checked)) {
+        alert('Por favor, responde todas las preguntas antes de enviar.');
+        return;
+      }
+    } else if(q.type === 'multiple') {
+      const checkboxes = document.querySelectorAll(`input[name="q${i}"]:checked`);
+      if (checkboxes.length === 0) {
+        alert('Por favor, responde todas las preguntas antes de enviar.');
+        return;
+      }
+    } else if(q.type === 'text') {
+      const textInput = document.querySelector(`input[name="q${i}_text"]`);
+      if (!textInput.value.trim()) {
+        alert('Por favor, responde todas las preguntas antes de enviar.');
+        return;
+      }
+    }
+  }
+
+  // Mostrar resumen
+  let resultHTML = '<h2>Resumen de tus respuestas:</h2><ul>';
+  allQuestions.forEach((q, i) => {
+    resultHTML += `<li><strong>${q.question}</strong><br>Respuesta: `;
+    if(q.type === 'single') {
+      const radios = document.getElementsByName(`q${i}`);
+      const selected = [...radios].find(r => r.checked);
+      resultHTML += selected.value;
+    } else if(q.type === 'multiple') {
+      const checkedBoxes = document.querySelectorAll(`input[name="q${i}"]:checked`);
+      const values = [...checkedBoxes].map(cb => cb.value);
+      resultHTML += values.join(', ');
+    } else if(q.type === 'text') {
+      const textInput = document.querySelector(`input[name="q${i}_text"]`);
+      resultHTML += textInput.value.trim();
+    }
+    resultHTML += '</li><br>';
+  });
+  resultHTML += '</ul>';
+  resultDiv.innerHTML = resultHTML;
+
+  resultDiv.scrollIntoView({behavior: 'smooth'});
+}
+
+categorySelect.addEventListener('change', loadQuestions);
+</script>
+
+</body>
+</html>
